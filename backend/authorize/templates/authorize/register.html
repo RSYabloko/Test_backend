@@ -1,5 +1,28 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+
 <h1>{{ title }}</h1>
+
+<form method='post'>
+	{% csrf_token %}
+	<input type='Email' name='Email' placeholder='Email' required>
+	<br>
+	<input type='First name' name='First name' placeholder='First name' required>
+	<br>
+	<input type='Middle name' name='Middle name' placeholder='Middle name' required>
+	<br>
+	<input type='Last name' name='Last name' placeholder='Last name' required>
+	<br>
+	<input type='Password' name='Password' placeholder='Password' required>
+	<br>
+	<input type='Password' name='Confirm password' placeholder='Confirm password' required>
+	<br>
+	<button type='submit'>Register</button>
+</form>
+
+{% if error %}
+    <p style='color:red'>{{ error }}</p>
+{% endif %}
+
 {% endblock %}

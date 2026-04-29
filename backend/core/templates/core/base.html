@@ -5,7 +5,6 @@
 </head>
 
 <body>
-
 {% block mainmenu %}
 <ul>
 	{% for x in menu%}
@@ -13,6 +12,12 @@
 	{% endfor %}
 </ul>
 {% endblock mainmenu %}
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: green;"> {{ message }}</p>
+    {% endfor %}
+{% endif %}
 
 {% block content %}
 {% endblock %}
