@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1>Deactivate account</h1>
+<form method='post'>
+	{% csrf_token %}
+	<br>
+	<input type='password' name='password' placeholder='password'>
+	<button type='submit'>Deactivate account</button>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+<h1>Settings</h1>
+
+{% block content %}
+<a href='{% url 'users:change_password'%}'>Change password</a>
+<a href='{% url 'users:deactivate_account'%}'>Deactivate account</a>
+<form method='post'>
+	{% csrf_token %}
+	<input type='text' name='first_name' value='{{ request.user.first_name }}' placeholder='First name'>
+	<br>
+	<input type='text' name='middle_name' value='{{ request.user.middle_name }}' placeholder='Middle name'>
+	<br>
+	<input type='text' name='last_name' value='{{ request.user.last_name }}' placeholder='Last name'>
+	<br>
+	<input type='text' name='email' value='{{ request.user.email }}' placeholder='Email'>
+	<br>
+
+	<button type='submit'>Save</button>
+</form>
+{% endblock %}

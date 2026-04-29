@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, logout
+
+from authorize.services.auth import auth_user
 
 User = get_user_model()
 
@@ -11,31 +13,26 @@ menu = [
         ]
 
 def login_user(request):
-    context = {
-            'menu': menu,
-            'title': 'Login',
-            }
-
     if request.method == 'POST':
         email = request.POST.get('Email')
         password = request.POST.get('Password')
 
-        try:
-            user = User.objects.get(email = email)
-        except User.DoesNotExist:
-            messages.error(request, 'User not found')
-            return redirect('login')
+        user, message = auth_user(email, password)
 
-        if not user.check_password(password):
-            messages.error(request, 'Password not correct')
-            return redirect('login')
+        if not user:
+            messages.error(request, message)
+            return redirect('authorize:login')
 
         login(request, user)
 
         messages.success(request, 'Loggin success')
         return redirect('home')
 
-    return render(request, 'authorize/login.html', context = context)
+    return render(request, 'authorize/login.html')
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
 
 def register(request):
     context = {
