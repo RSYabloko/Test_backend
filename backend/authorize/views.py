@@ -1,16 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.models import Group
 
-from authorize.services.auth import auth_user
+from authorize.services.auth import auth_user, register_user
 
 User = get_user_model()
-
-menu = [
-        {'title': 'Home', 'url': 'home'},
-        {'title': 'Login', 'url': 'login'},
-        {'title': 'Register', 'url': 'register'},
-        ]
 
 def login_user(request):
     if request.method == 'POST':
@@ -35,10 +30,6 @@ def logout_user(request):
     return redirect('home')
 
 def register(request):
-    context = {
-            'menu': menu,
-            'title': 'Register',
-            }
     if request.method == 'POST':
         email = request.POST.get('Email')
         first_name = request.POST.get('First name')
@@ -47,14 +38,11 @@ def register(request):
         password = request.POST.get('Password')
         confirm_password = request.POST.get('Confirm password')
 
-        if len(password) < 8:
-            return render(request, 'authorize/register.html', {'menu': menu, 'title': 'Register', 'error': 'Password must be least 8 simbols'})
+        answer, message = register_user(email, password, confirm_password)
 
-        if password != confirm_password:
-            return render(request, 'authorize/register.html', {'menu': menu, 'title': 'Register', 'error': 'Password error'})
-
-        if User.objects.filter(email=email).exists():
-            return render(request, 'authorize/register.html', {'menu': menu, 'title': 'Register', 'error': 'User exists'})
+        if not answer:
+            messages.error(request, message)
+            return redirect('authorize:register')
 
         user = User.objects.create(
                 email = email,
@@ -65,6 +53,8 @@ def register(request):
         user.set_password(password)
         user.save()
 
+        group, _ = Group.objects.get_or_create(name='user')
+        user.groups.add(group)
         messages.success(request, 'Register successful')
 
-    return render(request, 'authorize/register.html', context = context)
+    return render(request, 'authorize/register.html')
