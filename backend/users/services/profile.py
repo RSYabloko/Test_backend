@@ -1,3 +1,6 @@
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def update_profile(user, data):
     user.first_name = data.get('first_name')
     user.middle_name = data.get('middle_name')

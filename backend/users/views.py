@@ -1,9 +1,11 @@
-from users.services.profile import update_profile
-from users.services.user import change_password, deactivate_account
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect
+
+from users.services.profile import update_profile
+from users.services.user import change_password, deactivate_account
+from users.services.permissions import check_admin
 
 @login_required
 def settings_user(request):
@@ -44,10 +46,15 @@ def deactivate_account_view(request):
         success, message = deactivate_account(request.user, password)
         if not success:
             messages.error(request, message)
-            return redirect('users/deactivate_account.html')
+            return redirect('users:deactivate_account')
 
         logout(request)
         messages.success(request, message)
         return redirect('home')
 
     return render(request, 'users/deactivate_account.html')
+
+@login_required
+@user_passes_test(check_admin)
+def admin_panel(request):
+    return render(request, 'users/admin_panel.html')

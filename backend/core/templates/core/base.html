@@ -15,8 +15,8 @@
 	    <a href="{% url 'authorize:login' %}"}>Login</a>
 	    <a href="{% url 'authorize:register' %}"}>Register</a>
 	{% endif %}
-	{% if is_admin %}
-	    <a href="/admin">Admin panel</a>
+	{% if check_admin %}
+	    <a href="admin_panel/">Admin panel</a>
 	{% endif %}
 </ul>
 {% endblock mainmenu %}
